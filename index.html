@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>Smart Vending Machine</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#e8eef7;background:#0b1220}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(145deg,#0b1220,#18253e)}
+    .wrap{max-width:950px;margin:auto;padding:32px 20px 60px}.header{display:flex;align-items:center;gap:16px;margin-bottom:27px}
+    .logo{background:#163b32;padding:14px;border-radius:15px;font-size:25px}.eyebrow{color:#63ddaf;font-size:12px;font-weight:750;letter-spacing:.18em;text-transform:uppercase}
+    h1{margin:3px 0;font-size:clamp(26px,5vw,38px)}.sub{color:#a9b7cc;margin:0}.panel{background:#142035;border:1px solid #314058;border-radius:22px;padding:23px;box-shadow:0 14px 35px #04091350}
+    h2{margin:0 0 7px;font-size:20px}.hint{color:#a9b7cc;font-size:14px;margin:0 0 20px}
+    .products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.product{cursor:pointer;background:#1a2940;border:2px solid #304158;border-radius:16px;padding:20px 9px;display:flex;flex-direction:column;gap:9px;align-items:center;color:inherit;transition:.15s}
+    .product:hover{border-color:#7adabd;transform:translateY(-2px)}.product.selected{background:#163e37;border-color:#46d8a4}.product:focus-visible,.btn:focus-visible{outline:3px solid white;outline-offset:3px}
+    .product .pic{font-size:32px}.product strong{font-size:15px}.price{color:#7ee4b6;font-weight:750}.summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:22px 0 16px;border-top:1px solid #314058;margin-top:24px}.muted{color:#a9b7cc;font-size:13px}.btn{width:100%;border:0;background:#3dd5a0;color:#072b22;font-weight:800;font-size:17px;padding:17px;border-radius:12px;cursor:pointer}.btn:hover{background:#73e9bb}.btn:disabled{background:#64748b;color:#cbd5e1;cursor:not-allowed}.secondary{background:#263853;color:white}.secondary:hover{background:#354a6b}.hidden{display:none!important}
+    .payment{text-align:center;max-width:590px;margin:auto}.order{background:#1c3047;border-radius:13px;padding:15px;margin:20px 0;line-height:1.9}.amount{color:#7ee4b6;font-size:30px;font-weight:800}.placeholder{margin:18px auto;padding:24px;background:#fff;color:#334155;border-radius:15px;width:min(100%,275px);height:245px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px}.placeholder span{font-size:55px}.warning{color:#fcd999;font-size:13px;line-height:1.6}.footer{margin-top:24px;text-align:center;font-size:12px;color:#8192aa}
+    @media(max-width:420px){.wrap{padding:20px 12px}.panel{padding:15px}.products{gap:9px}.product{padding:15px 4px}.product strong{font-size:13px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="header"><div class="logo" aria-hidden="true">🛒</div><div><div class="eyebrow">UniKL prototype</div><h1>Smart Vending Machine</h1><p class="sub">Choose a product, then continue to payment.</p></div></div>
+  <section class="panel" id="catalogue">
+    <h2>Choose a product</h2><p class="hint">Tap one of the nine vending slots below.</p>
+    <div id="products" class="products"></div>
+    <div class="summary"><div><div class="muted">Selected product</div><strong id="chosen">None yet</strong></div><div style="text-align:right"><div class="muted">Total</div><strong id="total">RM 0.00</strong></div></div>
+    <button class="btn" id="pay" disabled>Choose a product first</button>
+  </section>
+  <section class="panel payment hidden" id="payment">
+    <h2>Complete your order</h2><p class="hint">Review the product you selected.</p>
+    <div class="order"><div id="orderName"></div><div class="amount" id="orderAmount"></div><div class="muted" id="orderId"></div></div>
+    <div class="placeholder" role="status"><span aria-hidden="true">▦</span><strong>Payment QR not connected</strong><small>Requires a payment provider and backend</small></div>
+    <p class="warning">DEMO ONLY — No payment can be made here. No automatic payment verification or dispensing is enabled. Never send a servo command merely because a customer views this page.</p>
+    <button class="btn secondary" id="back">← Back to products</button>
+  </section>
+  <div class="footer">VendingMachineFE · Frontend prototype · GitHub Pages</div>
+</main>
+<script>
+  // Sample products and prices — replace them with your real stock.
+  const products = [
+    {slot:1, name:'Product 1',price:2.00,emoji:'🥤'},
+    {slot:2, name:'Product 2',price:2.50,emoji:'🍫'},
+    {slot:3, name:'Product 3',price:3.00,emoji:'🍪'},
+    {slot:4, name:'Product 4',price:2.00,emoji:'🥨'},
+    {slot:5, name:'Product 5',price:3.50,emoji:'🍬'},
+    {slot:6, name:'Product 6',price:2.50,emoji:'🍿'},
+    {slot:7, name:'Product 7',price:4.00,emoji:'🧃'},
+    {slot:8, name:'Product 8',price:3.00,emoji:'🍩'},
+    {slot:9, name:'Product 9',price:2.00,emoji:'🍭'}
+  ];
+  let selected = null;
+  const list = document.getElementById('products');
+  const money = n => 'RM ' + n.toFixed(2);
+  products.forEach(product => {
+    const button=document.createElement('button');
+    button.className='product';button.type='button';
+    button.innerHTML=`<span class="pic" aria-hidden="true">${product.emoji}</span><strong>Slot ${product.slot}</strong><span class="muted">${product.name}</span><span class="price">${money(product.price)}</span>`;
+    button.addEventListener('click',()=>{
+      selected=product;
+      document.querySelectorAll('.product').forEach(el=>{el.classList.remove('selected');el.setAttribute('aria-pressed','false')});
+      button.classList.add('selected');button.setAttribute('aria-pressed','true');
+      document.getElementById('chosen').textContent=`Slot ${product.slot} — ${product.name}`;
+      document.getElementById('total').textContent=money(product.price);
+      document.getElementById('pay').disabled=false;
+      document.getElementById('pay').textContent='Continue to payment';
+    });
+    button.setAttribute('aria-pressed','false');
+    list.appendChild(button);
+  });
+  document.getElementById('pay').addEventListener('click',()=>{
+    if(!selected)return;
+    document.getElementById('orderName').textContent=`Slot ${selected.slot} — ${selected.name}`;
+    document.getElementById('orderAmount').textContent=money(selected.price);
+    // Display-only identifier. A real backend must create and track actual orders.
+    document.getElementById('orderId').textContent='Preview only — no order created';
+    document.getElementById('catalogue').classList.add('hidden');
+    document.getElementById('payment').classList.remove('hidden');
+    window.scrollTo(0,0);
+  });
+  document.getElementById('back').addEventListener('click',()=>{
+    document.getElementById('payment').classList.add('hidden');
+    document.getElementById('catalogue').classList.remove('hidden');
+  });
+</script>
+</body>
+</html>
