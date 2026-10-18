@@ -1,88 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <title>Smart Vending Machine</title>
-  <style>
-    :root{font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#e8eef7;background:#0b1220}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(145deg,#0b1220,#18253e)}
-    .wrap{max-width:950px;margin:auto;padding:32px 20px 60px}.header{display:flex;align-items:center;gap:16px;margin-bottom:27px}
-    .logo{background:#163b32;padding:14px;border-radius:15px;font-size:25px}.eyebrow{color:#63ddaf;font-size:12px;font-weight:750;letter-spacing:.18em;text-transform:uppercase}
-    h1{margin:3px 0;font-size:clamp(26px,5vw,38px)}.sub{color:#a9b7cc;margin:0}.panel{background:#142035;border:1px solid #314058;border-radius:22px;padding:23px;box-shadow:0 14px 35px #04091350}
-    h2{margin:0 0 7px;font-size:20px}.hint{color:#a9b7cc;font-size:14px;margin:0 0 20px}
-    .products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.product{cursor:pointer;background:#1a2940;border:2px solid #304158;border-radius:16px;padding:20px 9px;display:flex;flex-direction:column;gap:9px;align-items:center;color:inherit;transition:.15s}
-    .product:hover{border-color:#7adabd;transform:translateY(-2px)}.product.selected{background:#163e37;border-color:#46d8a4}.product:focus-visible,.btn:focus-visible{outline:3px solid white;outline-offset:3px}
-    .product .pic{font-size:32px}.product strong{font-size:15px}.price{color:#7ee4b6;font-weight:750}.summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:22px 0 16px;border-top:1px solid #314058;margin-top:24px}.muted{color:#a9b7cc;font-size:13px}.btn{width:100%;border:0;background:#3dd5a0;color:#072b22;font-weight:800;font-size:17px;padding:17px;border-radius:12px;cursor:pointer}.btn:hover{background:#73e9bb}.btn:disabled{background:#64748b;color:#cbd5e1;cursor:not-allowed}.secondary{background:#263853;color:white}.secondary:hover{background:#354a6b}.hidden{display:none!important}
-    .payment{text-align:center;max-width:590px;margin:auto}.order{background:#1c3047;border-radius:13px;padding:15px;margin:20px 0;line-height:1.9}.amount{color:#7ee4b6;font-size:30px;font-weight:800}.placeholder{margin:18px auto;padding:24px;background:#fff;color:#334155;border-radius:15px;width:min(100%,275px);height:245px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px}.placeholder span{font-size:55px}.warning{color:#fcd999;font-size:13px;line-height:1.6}.footer{margin-top:24px;text-align:center;font-size:12px;color:#8192aa}
-    @media(max-width:420px){.wrap{padding:20px 12px}.panel{padding:15px}.products{gap:9px}.product{padding:15px 4px}.product strong{font-size:13px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102236">
+<title>Quiz & Snack | VendingMachineFE</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#eff9f7;background:#091623;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#204b52 0%,transparent 48%),#091623}main{max-width:750px;margin:0 auto;padding:30px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:30px}.brand{font-size:1.08rem;font-weight:800;letter-spacing:.03em}.tag{background:#173743;color:#a8ebd7;border:1px solid #32615f;padding:7px 12px;border-radius:99px;font-size:.8rem}.panel{background:#102636;border:1px solid #2b4c58;border-radius:24px;padding:clamp(22px,5vw,38px);box-shadow:0 18px 50px #0003}.eyebrow{color:#8be6c9;font-size:.77rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800}h1{font-size:clamp(2rem,6vw,3rem);line-height:1.13;margin:13px 0}h2{font-size:clamp(1.35rem,4vw,1.75rem);line-height:1.3;margin:12px 0 22px}p{line-height:1.65;color:#b3ccd0}.button{border:0;border-radius:13px;background:#55dab1;color:#082521;font-weight:800;font-size:1rem;padding:15px 21px;cursor:pointer}.button:hover{background:#80f0cb}.button:disabled{cursor:not-allowed;opacity:.45}.button.secondary{background:#233f4b;color:#e8fff7}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}.stat{border:1px solid #2d515d;background:#173440;border-radius:14px;padding:14px;text-align:center}.stat strong{display:block;font-size:1.3rem;color:#eafff6}.stat small{color:#a0bec5}.progress{height:9px;border-radius:40px;background:#29444d;overflow:hidden;margin:18px 0 27px}.progress>div{height:100%;background:#55dab1;transition:width .2s}.answers{display:grid;gap:11px}.answer{width:100%;border:1px solid #385864;background:#183643;color:#e8f5f5;border-radius:13px;cursor:pointer;padding:16px;text-align:left;font-size:1rem;display:flex;gap:12px;align-items:center}.answer:hover:not(:disabled){background:#214653;border-color:#6edfc4}.answer:disabled{cursor:default}.answer.correct{border-color:#49d5a9;background:#155342}.answer.wrong{border-color:#f4a5a5;background:#56373e}.letter{display:inline-flex;align-items:center;justify-content:center;border:1px solid #5a7b82;border-radius:9px;width:28px;height:28px;flex:none;font-weight:700}.feedback{border-radius:12px;background:#1c3f49;padding:14px 16px;margin-top:18px;color:#dcf9ef}.action{margin-top:22px}.hidden{display:none!important}.reward{margin:25px 0;padding:22px;border:1px solid #4a9982;background:#154339;border-radius:18px;text-align:center}.reward .emoji{font-size:3.5rem}.reward h2{margin:9px 0}.notice{border-left:3px solid #f5c76e;background:#3c362c;padding:12px 16px;border-radius:8px;color:#ffe8b7;font-size:.88rem;line-height:1.6}.foot{text-align:center;margin:20px 0;color:#90abb2;font-size:.83rem}@media(max-width:430px){.stats{gap:6px}.stat{padding:10px 6px}.top{margin-bottom:22px}}
+</style>
 </head>
 <body>
-<main class="wrap">
-  <div class="header"><div class="logo" aria-hidden="true">🛒</div><div><div class="eyebrow">UniKL prototype</div><h1>Smart Vending Machine</h1><p class="sub">Choose a product, then continue to payment.</p></div></div>
-  <section class="panel" id="catalogue">
-    <h2>Choose a product</h2><p class="hint">Tap one of the nine vending slots below.</p>
-    <div id="products" class="products"></div>
-    <div class="summary"><div><div class="muted">Selected product</div><strong id="chosen">None yet</strong></div><div style="text-align:right"><div class="muted">Total</div><strong id="total">RM 0.00</strong></div></div>
-    <button class="btn" id="pay" disabled>Choose a product first</button>
+<main>
+  <header class="top"><div class="brand">🍿 Quiz & Snack</div><span class="tag">VendingMachineFE</span></header>
+  <section class="panel" id="welcome">
+    <div class="eyebrow">Play · Score · Win</div>
+    <h1>Answer 7 questions.<br>Earn a snack.</h1>
+    <p>Test your knowledge across maths, science, computers and general knowledge. Your final score determines which of six snack levels you unlock.</p>
+    <div class="stats"><div class="stat"><strong>7</strong><small>Questions</small></div><div class="stat"><strong>6</strong><small>Snack levels</small></div><div class="stat"><strong>1</strong><small>Reward per game</small></div></div>
+    <button class="button" id="start">Start Quiz →</button>
   </section>
-  <section class="panel payment hidden" id="payment">
-    <h2>Complete your order</h2><p class="hint">Review the product you selected.</p>
-    <div class="order"><div id="orderName"></div><div class="amount" id="orderAmount"></div><div class="muted" id="orderId"></div></div>
-    <div class="placeholder" role="status"><span aria-hidden="true">▦</span><strong>Payment QR not connected</strong><small>Requires a payment provider and backend</small></div>
-    <p class="warning">DEMO ONLY — No payment can be made here. No automatic payment verification or dispensing is enabled. Never send a servo command merely because a customer views this page.</p>
-    <button class="btn secondary" id="back">← Back to products</button>
+  <section class="panel hidden" id="game" aria-live="polite">
+    <div class="row" style="justify-content:space-between"><div class="eyebrow" id="category">Mixed knowledge</div><div id="counter">Question 1 of 7</div></div>
+    <div class="progress"><div id="progress" style="width:0%"></div></div>
+    <h2 id="question"></h2>
+    <div class="answers" id="answers"></div>
+    <div class="feedback hidden" id="feedback" role="status"></div>
+    <div class="row action" style="justify-content:space-between"><span id="scoreline">Score: 0 / 7</span><button class="button hidden" id="next">Next question →</button></div>
   </section>
-  <div class="footer">VendingMachineFE · Frontend prototype · GitHub Pages</div>
+  <section class="panel hidden" id="finish">
+    <div class="eyebrow">Quiz complete</div><h1>Your results</h1>
+    <p id="finalscore"></p>
+    <div class="reward"><div class="emoji">🎁</div><h2 id="rewardname"></h2><div id="rewarddetail"></div></div>
+    <div class="notice"><strong>Demo mode:</strong> No snack will be dispensed. This website does not communicate with the ESP32 yet. Physical dispensing requires server-side verification, one-time redemption and motor safety controls.</div>
+    <div class="row action"><button class="button" id="again">Play Again</button></div>
+  </section>
+  <p class="foot">University vending machine prototype · Quiz rewards are simulated</p>
 </main>
 <script>
-  // Sample products and prices — replace them with your real stock.
-  const products = [
-    {slot:1, name:'Product 1',price:2.00,emoji:'🥤'},
-    {slot:2, name:'Product 2',price:2.50,emoji:'🍫'},
-    {slot:3, name:'Product 3',price:3.00,emoji:'🍪'},
-    {slot:4, name:'Product 4',price:2.00,emoji:'🥨'},
-    {slot:5, name:'Product 5',price:3.50,emoji:'🍬'},
-    {slot:6, name:'Product 6',price:2.50,emoji:'🍿'},
-    {slot:7, name:'Product 7',price:4.00,emoji:'🧃'},
-    {slot:8, name:'Product 8',price:3.00,emoji:'🍩'},
-    {slot:9, name:'Product 9',price:2.00,emoji:'🍭'}
-  ];
-  let selected = null;
-  const list = document.getElementById('products');
-  const money = n => 'RM ' + n.toFixed(2);
-  products.forEach(product => {
-    const button=document.createElement('button');
-    button.className='product';button.type='button';
-    button.innerHTML=`<span class="pic" aria-hidden="true">${product.emoji}</span><strong>Slot ${product.slot}</strong><span class="muted">${product.name}</span><span class="price">${money(product.price)}</span>`;
-    button.addEventListener('click',()=>{
-      selected=product;
-      document.querySelectorAll('.product').forEach(el=>{el.classList.remove('selected');el.setAttribute('aria-pressed','false')});
-      button.classList.add('selected');button.setAttribute('aria-pressed','true');
-      document.getElementById('chosen').textContent=`Slot ${product.slot} — ${product.name}`;
-      document.getElementById('total').textContent=money(product.price);
-      document.getElementById('pay').disabled=false;
-      document.getElementById('pay').textContent='Continue to payment';
-    });
-    button.setAttribute('aria-pressed','false');
-    list.appendChild(button);
-  });
-  document.getElementById('pay').addEventListener('click',()=>{
-    if(!selected)return;
-    document.getElementById('orderName').textContent=`Slot ${selected.slot} — ${selected.name}`;
-    document.getElementById('orderAmount').textContent=money(selected.price);
-    // Display-only identifier. A real backend must create and track actual orders.
-    document.getElementById('orderId').textContent='Preview only — no order created';
-    document.getElementById('catalogue').classList.add('hidden');
-    document.getElementById('payment').classList.remove('hidden');
-    window.scrollTo(0,0);
-  });
-  document.getElementById('back').addEventListener('click',()=>{
-    document.getElementById('payment').classList.add('hidden');
-    document.getElementById('catalogue').classList.remove('hidden');
-  });
+'use strict';
+const bank = [
+ {cat:'Mathematics',q:'What is 15% of 200?',a:['15','20','30','40'],right:2,why:'10% of 200 is 20 and 5% is 10, so 15% is 30.'},
+ {cat:'Science',q:'Which planet is known as the Red Planet?',a:['Venus','Mars','Jupiter','Saturn'],right:1,why:'Mars looks reddish because of iron oxide on its surface.'},
+ {cat:'Technology',q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power Utility','Core Program Upload','Central Print Unit'],right:0,why:'CPU stands for Central Processing Unit.'},
+ {cat:'General Knowledge',q:'What is the capital city of Malaysia?',a:['Johor Bahru','George Town','Kuala Lumpur','Kuching'],right:2,why:'Kuala Lumpur is Malaysia’s national capital.'},
+ {cat:'Science',q:'What gas do plants absorb during photosynthesis?',a:['Oxygen','Hydrogen','Nitrogen','Carbon dioxide'],right:3,why:'Plants absorb carbon dioxide during photosynthesis.'},
+ {cat:'Mathematics',q:'What is 9 × 8?',a:['64','72','81','78'],right:1,why:'Nine groups of eight make 72.'},
+ {cat:'Technology',q:'Which device is commonly used to connect a computer to a wireless network?',a:['Wi-Fi adapter','Monitor','Printer','Speaker'],right:0,why:'A Wi-Fi adapter allows wireless network connections.'},
+ {cat:'General Knowledge',q:'How many continents are commonly taught in the seven-continent model?',a:['5','6','7','8'],right:2,why:'The seven-continent model lists seven continents.'},
+ {cat:'Science',q:'At standard atmospheric pressure, at what temperature does pure water boil?',a:['90°C','100°C','110°C','120°C'],right:1,why:'Pure water boils at approximately 100°C at standard atmospheric pressure.'},
+ {cat:'Technology',q:'What does HTML primarily describe?',a:['A database server','A web page structure','An internet connection speed','A graphics processor'],right:1,why:'HTML structures content on webpages.'},
+ {cat:'Mathematics',q:'What is the square root of 144?',a:['10','11','12','14'],right:2,why:'12 × 12 equals 144.'},
+ {cat:'General Knowledge',q:'Which ocean is the largest by surface area?',a:['Atlantic','Indian','Arctic','Pacific'],right:3,why:'The Pacific Ocean has the largest surface area.'},
+ {cat:'Science',q:'Which organ pumps blood around the human body?',a:['Liver','Lung','Heart','Kidney'],right:2,why:'The heart pumps blood through the circulatory system.'},
+ {cat:'Mathematics',q:'What is 3/4 expressed as a percentage?',a:['25%','50%','75%','80%'],right:2,why:'Three divided by four is 0.75, or 75%.'}
+];
+// Six reward levels mapped to channels 0–5; no commands are sent to hardware.
+const rewards = [
+ {min:0,max:1,name:'Consolation Snack',channel:0},
+ {min:2,max:2,name:'Level 1 Snack',channel:1},
+ {min:3,max:3,name:'Level 2 Snack',channel:2},
+ {min:4,max:4,name:'Level 3 Snack',channel:3},
+ {min:5,max:6,name:'Level 4 Snack',channel:4},
+ {min:7,max:7,name:'Premium Snack',channel:5}
+];
+const el=id=>document.getElementById(id);
+let questions=[],index=0,score=0,answered=false;
+function show(which){for(const id of ['welcome','game','finish'])el(id).classList.toggle('hidden',id!==which)}
+function shuffle(list){const copy=[...list];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
+function start(){questions=shuffle(bank).slice(0,7);index=0;score=0;show('game');render()}
+function render(){answered=false;const item=questions[index];el('category').textContent=item.cat;el('counter').textContent=`Question ${index+1} of 7`;el('progress').style.width=`${index/7*100}%`;el('question').textContent=item.q;el('scoreline').textContent=`Score: ${score} / 7`;el('feedback').classList.add('hidden');el('next').classList.add('hidden');el('answers').replaceChildren();item.a.forEach((answer,i)=>{const button=document.createElement('button');button.type='button';button.className='answer';const letter=document.createElement('span');letter.className='letter';letter.textContent='ABCD'[i];button.append(letter,document.createTextNode(answer));button.addEventListener('click',()=>answerQuestion(i));el('answers').append(button)})}
+function answerQuestion(choice){if(answered)return;answered=true;const item=questions[index];if(choice===item.right)score++;Array.from(el('answers').children).forEach((b,i)=>{b.disabled=true;if(i===item.right)b.classList.add('correct');else if(i===choice)b.classList.add('wrong')});el('feedback').textContent=(choice===item.right?'✅ Correct! ':'❌ Not quite. ')+item.why;el('feedback').classList.remove('hidden');el('scoreline').textContent=`Score: ${score} / 7`;el('next').textContent=index===6?'See my reward →':'Next question →';el('next').classList.remove('hidden')}
+function next(){if(!answered)return;if(index<6){index++;render()}else{const reward=rewards.find(r=>score>=r.min&&score<=r.max);el('progress').style.width='100%';el('finalscore').textContent=`You answered ${score} out of 7 questions correctly.`;el('rewardname').textContent=reward.name;el('rewarddetail').textContent=`Reward level: Servo ${reward.channel+1} · PCA9685 channel ${reward.channel} (simulation only)`;show('finish')}}
+el('start').addEventListener('click',start);el('next').addEventListener('click',next);el('again').addEventListener('click',start);
 </script>
 </body>
 </html>
