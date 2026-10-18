@@ -75,6 +75,7 @@ function next(){if(!answered)return;if(index<6){index++;render()}else{const rewa
 el('start').addEventListener('click',start);el('next').addEventListener('click',next);el('again').addEventListener('click',start)
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -91,17 +92,31 @@ el('start').addEventListener('click',start);el('next').addEventListener('click',
 
   // Initialize Firebase
   try {
-  const app = initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  document.getElementById("firebase-status")
-    .textContent = "Firebase initialized!";
+    document.getElementById("firebase-status")
+      .textContent = "Firebase initialized. Signing in...";
 
-} catch (error) {
-  document.getElementById("firebase-status")
-    .textContent = "Firebase initialization failed";
+    try {
+      const credential = await signInAnonymously(auth);
 
-  console.error(error);
-}
+      document.getElementById("firebase-status")
+        .textContent = "Firebase Authentication successful!";
+
+      console.log("Anonymous user ID:", credential.user.uid);
+    } catch (error) {
+      document.getElementById("firebase-status")
+        .textContent = "Firebase Authentication failed";
+
+      console.error("Authentication error:", error);
+    }
+  } catch (error) {
+    document.getElementById("firebase-status")
+      .textContent = "Firebase initialization failed";
+
+    console.error(error);
+  }
 </script>
 </body>
 </html>
