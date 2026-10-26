@@ -38,7 +38,7 @@ async function next(){if(answers.length!==index+1||busy)return;if(index<6){index
  try{const result=await request('/api/submit',{sessionId,answers});
  el('finalscore').textContent=`You answered ${result.score} out of 7 questions correctly.`;
  el('rewardname').textContent=result.rewardName;
- el('rewarddetail').textContent=`Reward: Slot ${result.channel+1}. Status: ${result.status}.`;
+ el('rewarddetail').textContent=`Reward: Slot ${4-result.channel}. Status: ${result.status}.`;
  // The API returns explanations only AFTER final server validation.
  const details=result.correctAnswers.map((a,i)=>`Q${i+1}: ${answers[i]===a.right?'Correct':'Incorrect'}. ${a.why}`).join('\n');
  let info=el('answer-review');if(!info){info=document.createElement('pre');info.id='answer-review';info.style.cssText='white-space:pre-wrap;color:#b3ccd0';el('finish').appendChild(info);}info.textContent=details;
