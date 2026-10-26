@@ -29,8 +29,8 @@ function render(){const item=questions[index];el('category').textContent=item.ca
  el('question').textContent=item.q;el('scoreline').textContent=`Answered: ${answers.length} / 7`;el('feedback').classList.add('hidden');el('next').classList.add('hidden');el('answers').replaceChildren();
  item.a.forEach((label,i)=>{const b=document.createElement('button');b.type='button';b.className='answer';const letter=document.createElement('span');letter.className='letter';letter.textContent='ABCD'[i];b.append(letter,document.createTextNode(label));b.addEventListener('click',()=>choose(i));el('answers').appendChild(b);});
 }
-function choose(choice){if(answers.length>index)return;answers.push(choice);[...el('answers').children].forEach((b,i)=>{b.disabled=true;if(i===choice)b.classList.add('correct');});
- el('feedback').textContent='Answer recorded. Correct answers are revealed after the quiz.';el('feedback').classList.remove('hidden');
+function choose(choice){if(busy)return;answers[index]=choice;[...el('answers').children].forEach((b,i)=>b.classList.toggle('correct',i===choice));
+ el('feedback').textContent='Answer recorded. You can change it before continuing. Correct answers are revealed after the quiz.';el('feedback').classList.remove('hidden');
  el('scoreline').textContent=`Answered: ${answers.length} / 7`;el('next').textContent=index===6?'Verify result →':'Next question →';el('next').classList.remove('hidden');
 }
 async function next(){if(answers.length!==index+1||busy)return;if(index<6){index++;render();return;}

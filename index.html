@@ -17,7 +17,7 @@
     <h1>Answer 7 questions.<br>Earn a snack.</h1>
     <p>Test your knowledge across maths, science, computers and general knowledge. Your final score determines which of six snack levels you unlock.</p>
     <div class="stats"><div class="stat"><strong>7</strong><small>Questions</small></div><div class="stat"><strong>6</strong><small>Snack levels</small></div><div class="stat"><strong>1</strong><small>Reward per game</small></div></div>
-    <button class="button" id="start">Start Quiz →</button>
+    <button class="button" id="start">Start Quiz</button>
   </section>
   <section class="panel hidden" id="game" aria-live="polite">
     <div class="row" style="justify-content:space-between"><div class="eyebrow" id="category">Mixed knowledge</div><div id="counter">Question 1 of 7</div></div>
@@ -31,10 +31,9 @@
     <div class="eyebrow">Quiz complete</div><h1>Your results</h1>
     <p id="finalscore"></p>
     <div class="reward"><div class="emoji">🎁</div><h2 id="rewardname"></h2><div id="rewarddetail"></div></div>
-    <div class="notice"><strong>Demo mode:</strong> No snack will be dispensed. This website does not communicate with the ESP32 yet. Physical dispensing requires server-side verification, one-time redemption and motor safety controls.</div>
     <div class="row action"><button class="button" id="again">Play Again</button></div>
   </section>
-  <p class="foot">University vending machine prototype · Quiz rewards are simulated</p>
+  <p class="foot">University vending machine prototype</p>
   <p id="firebase-status">Connecting to Firebase...</p>
 </main>
 <script type="module" src="./quiz-app.js"></script>
